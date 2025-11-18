@@ -14,8 +14,27 @@ constructor() {
 }
 
 saveeventListener(){
+let home = document.getElementById("Home");
+let fav = document.getElementById("favorites");
+let searchdiv = document.getElementById("seachfiltering")
+let favdiv = document.getElementById("favFilterpart")
 
-  
+home.addEventListener("click" , ()=>{
+  favdiv.style.display = "none"
+  searchdiv.style.display = "block";
+
+  home.classList.add("active");
+  fav.classList.remove("active")
+})
+
+fav.addEventListener("click" , ()=>{
+  favdiv.style.display = "block"
+  searchdiv.style.display = "none";
+
+  home.classList.remove("active");
+  fav.classList.add("active")
+})
+
 }
 
 }

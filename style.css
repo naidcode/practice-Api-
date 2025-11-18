@@ -61,6 +61,17 @@ body {
   color: #fff;
 }
 
+.heartIcon {
+  font-size: 20px;
+  color: rgb(105, 103, 103);
+  transition: 0.2s;
+}
+
+.filterBtn.active .heartIcon {
+  color: white;
+}
+
+
 .seachMain{
   height: 150px;
   background-color: white;
@@ -121,6 +132,7 @@ border: none;
 }
 
 .favFilterpart{
+  display: none;
     height: 120px;
   background-color: white;
   border-radius: 10px;

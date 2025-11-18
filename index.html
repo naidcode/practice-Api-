@@ -19,11 +19,12 @@
     </div>
 
     <div class="pageFilterBtn">
-      <button class="filterBtn active" data-filter="home">Home</button>
-      <button class="filterBtn heart" data-filter="favorite">
-        <img src="images/favorite_24dp_434343_FILL0_wght400_GRAD0_opsz24.png" alt="heart">
-        Favorites
-      </button>
+      <button class="filterBtn active" id="Home" data-filter="home">Home</button>
+      <button class="filterBtn heart" id="favorites" data-filter="favorite">
+  <span class="material-icons heartIcon">favorite</span>
+  Favorites
+</button>
+
     </div>
   </nav>
 
@@ -37,7 +38,7 @@
     <input type="text" id="searchInput" placeholder="Enter Recipe By Name">
     <button id="seachBtn">Search</button>
   </div>
-  <div class="favFilterpart">
+  <div class="favFilterpart" id="favFilterpart">
     <p>Filter Favorites</p>
     <div class="favoriteFilter">
       <button class="filterFav activefav" data-filter="favall">All</button>
