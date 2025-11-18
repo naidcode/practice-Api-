@@ -1,0 +1,168 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: rgb(247, 236, 224);
+  font-family: 'Poppins', sans-serif;
+}
+
+.navMain {
+  width: 100%;
+  height: 80px;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #fff;
+  box-shadow: 1px 0px 12px rgb(211, 209, 209);
+}
+
+
+.AppLogo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  background-color: rgb(255, 115, 0);
+  mask: url("images/chef_hat_24dp_999999_FILL0_wght400_GRAD0_opsz24.svg") no-repeat center;
+  mask-size: contain;
+}
+
+.pageFilterBtn {
+  display: flex;
+  gap: 10px;
+}
+
+.filterBtn {
+  height: 45px;
+  width: 130px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgb(105, 103, 103);
+  background-color: rgb(226, 226, 226);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.filterBtn.active {
+  background-color: rgb(255, 115, 0);
+  color: #fff;
+}
+
+.seachMain{
+  height: 150px;
+  background-color: white;
+  border-radius: 10px;
+  width: 65%;
+  margin: 1.5em auto;
+  box-shadow: 1px 0px 12px rgb(211, 209, 209);
+  padding: 1em;
+}
+
+.searchfitlering{
+  display: flex;
+  gap: 10px;
+}
+
+.searchfitlering .searchactive{
+   background-color: rgb(255, 115, 0);
+  color: #fff;
+}
+
+.filter{
+   height: 45px;
+  width: 110px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgb(105, 103, 103);
+  background-color: rgb(226, 226, 226);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+#searchInput{
+  height: 45px;
+  width: 80%;
+  color: grey;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1.5px solid rgb(129, 133, 134);
+  margin: 1em 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+#seachBtn{
+  height: 45px;
+  width: 15%;
+  border-radius: 5px;
+background-color: rgb(255, 115, 0);
+color: white;
+font-size: 1rem;
+font-family: 'poppins';
+border: none;
+}
+
+.favFilterpart{
+    height: 120px;
+  background-color: white;
+  border-radius: 10px;
+  width: 65%;
+  margin: 1.5em auto;
+  box-shadow: 1px 0px 12px rgb(211, 209, 209);
+  padding: 1em;
+}
+
+.favFilterpart p{
+  font-family: 'poppins';
+  font-size: 1rem;
+  font-weight: 550;
+  color: rgb(66, 65, 65);
+  padding: 0 0 10px 0;
+}
+
+.favoriteFilter{
+  display: flex;
+  gap: 20px;
+}
+
+.favoriteFilter .activefav{
+    background-color: rgb(255, 115, 0);
+  color: #fff;
+}
+
+.filterFav{
+   height: 45px;
+  width: 100px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: rgb(105, 103, 103);
+  background-color: rgb(226, 226, 226);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+
+
