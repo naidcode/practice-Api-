@@ -95,7 +95,7 @@ class RecipeManager{
   markfav(Id){
     let fav = this.#favorites.find(s => s.id === Id)
     if(!fav) return;
-    fav.tried = !fav.tried;
+   return fav.tried = !fav.tried;
   }
 
   countTried(){

@@ -72,7 +72,7 @@ body {
 }
 
 
-.seachMain{
+.searchMain{
   height: 150px;
   background-color: white;
   border-radius: 10px;
@@ -120,15 +120,20 @@ body {
 }
 
 
-#seachBtn{
+#searchBtn{
   height: 45px;
   width: 15%;
   border-radius: 5px;
 background-color: rgb(255, 115, 0);
 color: white;
 font-size: 1rem;
-font-family: 'poppins';
+font-family:Arial, Helvetica, sans-serif;
 border: none;
+}
+
+#searchBtn:active{
+  background-color: rgb(255, 94, 0);
+  border: 2px solid rgb(241, 166, 136);
 }
 
 .favFilterpart{
@@ -177,4 +182,96 @@ border: none;
 }
 
 
+@media (max-width:1100px){
 
+  h1{
+    font-size: 1.6rem;
+  }
+  .logo{
+    height: 26px;
+    width: 26px;
+    mask-size: contain;
+  }
+
+  .navMain{
+    justify-content: space-between;
+  }
+
+  .searchMain , .favFilterpart{
+    width: 95%;
+  }
+}
+
+@media (max-width: 710px){
+  .filterBtn{
+    width: 100px;
+    font-size: 0.9rem;
+  }
+
+  .filter , .filterFav{
+    width: 90px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width:540px){
+   h1{
+    font-size: 1.4rem;
+  }
+  .logo{
+    height: 23px;
+    width: 23px;
+    mask-size: contain;
+  }
+
+   .filterBtn{
+    width: 80px;
+    font-size: 0.8rem;
+  }
+
+  .filter , .filterFav{
+    width: 90px;
+    font-size: 0.8rem;
+  }
+
+  #searchBtn{
+    width: 18%;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 390px){
+
+  .navMain{
+    height: 60px;
+  }
+     h1{
+    font-size: 1.1rem;
+  }
+  .logo{
+    height: 19px;
+    width: 19px;
+    mask-size: contain;
+  }
+
+   .filterBtn{
+    height: 37px;
+    width: 60px;
+    font-size: 0.6rem;
+  }
+
+  .filter , .filterFav{
+    height: 37px;
+    width: 80px;
+    font-size: 0.6rem;
+  }
+
+  #searchBtn{
+    width: 18%;
+    font-size: 0.8rem;
+  }
+  .searchfitlering{
+    margin: 0 auto;
+    /* width: 100%; */
+  }
+}
