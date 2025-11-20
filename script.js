@@ -28,7 +28,7 @@ class RecipeManager{
   #favorites = [];
 
   constructor() {
-    // this.loadLocalstorage()
+    this.loadLocalstorage()
   }
 
   async fetchRecipes(searchName) {
@@ -75,7 +75,7 @@ class RecipeManager{
   }
 
   favCount(){
-    return this.#favorites.length;
+    return this.#recipes.length;
   }
 
   getFavorites(){
@@ -194,15 +194,12 @@ class UIRenderer{
   }
 
   renderfavCounts(){
-    let all = document.getElementById("allfav");
     let tried = document.getElementById("triedfav");
     let totry =  document.getElementById("tryfav");
 
-    let allcount = this.manager.favCount();
     let triedcount = this.manager.countTried();
     let trycount = this.manager.countTotry();
 
-    all.textContent = `All(${allcount})`;
     tried.textContent = `Tried(${triedcount})`;
     totry.textContent = `to Try(${trycount})`;
   }

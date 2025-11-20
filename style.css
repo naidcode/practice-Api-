@@ -199,11 +199,13 @@ border: none;
 }
 
 .recipe-content {
+  width: 100%;
+  max-height: 400px;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   display: flex;
-  overflow: hidden;
+  overflow: scroll;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -373,6 +375,10 @@ border: none;
     width: 95%;
   }
 
+  .recipe-content{
+    width: 100%;
+  }
+
   .recipe-poster {
     width: 200px;
     height: 240px;
@@ -413,6 +419,7 @@ border: none;
 }
 
 .recipe-content {
+  width: 100%;
     flex-direction: column;
   }
 
