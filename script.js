@@ -333,10 +333,10 @@ document.querySelector(".favoriteFilter").addEventListener("click" , (e) => {
 
 let app =  new App();
 
-  fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=pasta')
-  .then(res => res.json())
-  .then(data => console.log(data))
+  // fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=pasta')  justtesting the fetch data
+  // .then(res => res.json())
+  // .then(data => console.log(data))
 
-  let manager = new RecipeManager();
-  console.log(manager.getRecipe())
-  console.log(manager.getFavorites())
+  // let manager = new RecipeManager();
+  // console.log(manager.getRecipe())
+  // console.log(manager.getFavorites())
