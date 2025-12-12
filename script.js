@@ -33,7 +33,7 @@ class RecipeManager{
 
   async fetchRecipes(searchName) {
     try {
-      let response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchName}`)
+      let response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(searchName)}`)
       if(!response.ok){
         throw new Error("invalid response");
       }
@@ -54,7 +54,7 @@ class RecipeManager{
 
   async fetchCategory(searchCat) {
     try {
-      let response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?c=${searchCat}`)
+      let response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${encodeURIComponent(searchCat)}`)
       if(!response.ok){
         throw new Error("invalid response");
       }
@@ -65,7 +65,11 @@ class RecipeManager{
         this.#recipes = [];
         return null;
       }
-      this.#recipes = data.meals.map(meal=> new Recipe(meal))
+      const detailrecipe = await Promise.all(
+        data.meals.map((meal) => this.fetchID(meal.idMeal))
+      )
+
+      this.#recipes = detailrecipe.filter(r => r !== null)
       
     } catch (error) {
       console.log(error)
@@ -75,7 +79,7 @@ class RecipeManager{
 
   async fetchIngredient(searchInd) {
     try {
-      let response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?i=${searchInd}`)
+      let response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${encodeURIComponent(searchInd)}`)
       if(!response.ok){
         throw new Error("invalid response");
       }
@@ -86,7 +90,28 @@ class RecipeManager{
         this.#recipes = [];
         return null;
       }
-      this.#recipes = data.meals.map(meal=> new Recipe(meal))
+      const detailrecipe = await Promise.all(
+        data.meals.map((meal) => this.fetchID(meal.idMeal))
+      )
+
+      this.#recipes = detailrecipe.filter(r => r !== null)
+      
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+    async fetchID(Id) {
+    try {
+      let response = await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${encodeURIComponent(Id)}`)
+      if(!response.ok){
+        throw new Error("invalid response");
+      }
+
+      const data = await response.json();
+
+     return data.meals ? new Recipe(data.meals[0]) : null;
       
     } catch (error) {
       console.log(error)
@@ -118,7 +143,7 @@ class RecipeManager{
   }
 
   favCount(){
-    return this.#recipes.length;
+    return this.#favorites.length;
   }
 
   getFavorites(){
@@ -140,6 +165,8 @@ class RecipeManager{
     } else if(filter === "favtotry"){
       return fav.filter(f => !f.tried)
     }
+
+    return fav
   }
 
 
@@ -171,11 +198,11 @@ class RecipeManager{
 
       try {
         let parse = JSON.parse(recipe)
-        this.#recipes = parse.map(item => ({
-          ...item,
-          tried: item.tried || false
-        }))
-      
+          this.#recipes = parse.map(item => ({
+        ...item,
+        tried: item.tried ?? false,
+        ingredients: item.ingredients || []
+      }));
     } catch (error) {
       this.#recipes = [];
     }
@@ -186,11 +213,11 @@ class RecipeManager{
     if(favorites){
       try {
         let favparse = JSON.parse(favorites)
-        this.#favorites = favparse.map(item => ({
-          ...item ,
-          tried: item.tried || false
-        }))
-        
+          this.#favorites = favparse.map(item => ({
+        ...item,
+        tried: item.tried ?? false,
+        ingredients: item.ingredients || []
+      }));
       } catch (error) {
         this.#favorites = [];
       }
@@ -269,7 +296,7 @@ constructor() {
 saveeventListener(){
 let home = document.getElementById("Home");
 let fav = document.getElementById("favorites");
-let searchdiv = document.getElementById("seachfiltering")
+let searchdiv = document.getElementById("searchfilter")
 let favdiv = document.getElementById("favFilterpart");
 let h2 = document.getElementById("heading2") 
 
@@ -308,7 +335,7 @@ document.getElementById("searchBtn").addEventListener("click" , async () => {
   }
 
     const activeFilter = document.querySelector(".filter.searchactive")
-    const filter = activeFilter.dataset.filter;
+    const filter = activeFilter ? activeFilter.dataset.filter : "byname";
 
     if(filter === "byname"){
       await this.manager.fetchRecipes(searchValue)
@@ -379,7 +406,7 @@ document.querySelector(".favoriteFilter").addEventListener("click" , (e) => {
   }
 })
 
-document.querySelector(".searchfitlering").addEventListener("click" , (e) => {
+document.querySelector(".searchfiltering").addEventListener("click" , (e) => {
   if(e.target.classList.contains("filter")){
     this.currentfilter = e.target.dataset.filter;
 
@@ -401,7 +428,7 @@ document.querySelector(".searchfitlering").addEventListener("click" , (e) => {
     }
 
     this.renderer.renderfavCounts()
-    this.renderer.renderrecipeList(this.manager.filteringFav(this.currentfilter));
+    this.renderer.renderrecipeList(this.manager.getRecipe());
 
   }
 })
