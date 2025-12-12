@@ -82,12 +82,12 @@ body {
   padding: 1em;
 }
 
-.searchfitlering{
+.searchfiltering{
   display: flex;
   gap: 10px;
 }
 
-.searchfitlering .searchactive{
+.searchfiltering .searchactive{
    background-color: rgb(255, 115, 0);
   color: #fff;
 }
