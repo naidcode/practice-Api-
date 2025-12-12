@@ -52,6 +52,49 @@ class RecipeManager{
 
   }
 
+  async fetchCategory(searchCat) {
+    try {
+      let response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?c=${searchCat}`)
+      if(!response.ok){
+        throw new Error("invalid response");
+      }
+
+      const data = await response.json();
+
+      if(!data.meals){
+        this.#recipes = [];
+        return null;
+      }
+      this.#recipes = data.meals.map(meal=> new Recipe(meal))
+      
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+  async fetchIngredient(searchInd) {
+    try {
+      let response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?i=${searchInd}`)
+      if(!response.ok){
+        throw new Error("invalid response");
+      }
+
+      const data = await response.json();
+
+      if(!data.meals){
+        this.#recipes = [];
+        return null;
+      }
+      this.#recipes = data.meals.map(meal=> new Recipe(meal))
+      
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+
 
   deleteBtn(Id){
     this.#favorites = this.#favorites.filter(f => f.id !== Id);
@@ -103,8 +146,9 @@ class RecipeManager{
   marktry(Id){
     let fav = this.#favorites.find(s => s.id === Id)
     if(!fav) return;
+   fav.tried = !fav.tried;
     this.saveLocalStorage()
-   return fav.tried = !fav.tried;
+    return fav.tried
   }
 
   countTried(){
@@ -256,13 +300,23 @@ fav.addEventListener("click" , ()=>{
 
 document.getElementById("searchBtn").addEventListener("click" , async () => {
   let search = document.getElementById("searchInput");
+  let searchValue =  search.value.trim();
 
   if(search.value.trim() === ""){
     alert("please enter the name of the recipe")
     return
   }
 
-  await this.manager.fetchRecipes(search.value.trim());
+    const activeFilter = document.querySelector(".filter.searchactive")
+    const filter = activeFilter.dataset.filter;
+
+    if(filter === "byname"){
+      await this.manager.fetchRecipes(searchValue)
+    } else if(filter === "byingredient"){
+      await this.manager.fetchIngredient(searchValue)
+    } else if(filter === "bycategory"){
+      await this.manager.fetchCategory(searchValue)
+    }
 
 
   search.value = "";
@@ -318,6 +372,33 @@ document.querySelector(".favoriteFilter").addEventListener("click" , (e) => {
     })
 
     e.target.classList.add("activefav")
+
+    this.renderer.renderfavCounts()
+    this.renderer.renderrecipeList(this.manager.filteringFav(this.currentfilter));
+
+  }
+})
+
+document.querySelector(".searchfitlering").addEventListener("click" , (e) => {
+  if(e.target.classList.contains("filter")){
+    this.currentfilter = e.target.dataset.filter;
+
+    document.querySelectorAll(".filter").forEach(button => {
+      button.classList.remove("searchactive")
+    })
+
+    e.target.classList.add("searchactive")
+
+    const filtertype = e.target.dataset.filter;
+
+    let searchinp = document.getElementById("searchInput")
+    if(filtertype === "byname"){
+      searchinp.placeholder = "Enter Recipe Name"
+    } else if(filtertype === "byingredient"){
+      searchinp.placeholder = "Enter Recipe Ingredient"
+    } else if(filtertype === "bycategory"){
+      searchinp.placeholder = "Enter Recipe Category"
+    }
 
     this.renderer.renderfavCounts()
     this.renderer.renderrecipeList(this.manager.filteringFav(this.currentfilter));
