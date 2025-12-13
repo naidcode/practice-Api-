@@ -7,7 +7,8 @@ class Recipe{
     this.category = meal.strCategory;
     this.ingredients = [];
     this.instruction = meal.strInstructions;
-    this.tried = false
+    this.tried = false;
+    this.servings = 4;
 
     for (let i = 1; i <= 20;i++) {
       const ingredient = meal[`strIngredient${i}`];
@@ -186,6 +187,51 @@ class RecipeManager{
     return this.#favorites.filter(f => !f.tried).length;
   }
 
+  scalemeasure(measure,multiplier){
+    const numbermatch = measure.match('/[/d.\/]+/');
+    if(!numbermatch) return measure;
+
+    let number = numbermatch[0];
+
+    if(number.includes('/')){
+      const [num,den] = number.split('/').map(Number);
+      number = num/den
+    } else{
+      number = parseFloat(number);
+    }
+
+    const scaled = number * multiplier;
+
+    if(scaled % 1 === 0.5){
+      return measure.replace(numbermatch[0], `${Math.floor(scaled)} 1/2`);
+    } else if(scaled % 1 === 0.25){
+      return measure.replace(numbermatch[0], `${Math.floor(scaled)} 1/4`);
+    } else{
+      return measure.replace(numbermatch[0] , scaled.toFixed(1))
+    }
+  };
+
+  scaleIngredients(recipeId, newServings){
+    const recipe = this.#recipes.find(f => f.id === recipeId)
+
+    if(!recipe) return;
+
+    const multiplier = newServings / recipe.servings;
+
+    recipe.ingredients = recipe.ingredients.map(ing => {
+      const scaleMeasure = this.scalemeasure(ing.measure , multiplier);
+      return {
+        ...ing,
+        measure: scaleMeasure
+      };
+    })
+
+    recipe.servings = newServings;
+    this.saveLocalStorage();
+  }
+
+
+
   saveLocalStorage(){
     localStorage.setItem("recipe" ,JSON.stringify(this.#recipes))
     localStorage.setItem("favorites" , JSON.stringify(this.#favorites))
@@ -254,9 +300,17 @@ class UIRenderer{
               <span>${recipe.category}</span>
               <span class="ingredient-list">${recipe.ingredients.map(f => f.name + " " + f.measure).join(', ')}</span>
             </div>
+            <div class="serving-adjuster">
+            <label>Servings:</label>
+            <button class="servingBtn" data-id="${recipe.id}" data-action="decrease">-</button>
+            <span class="servingCount">${recipe.servings}</span>
+            <button class="servingBtn" data-id="${recipe.id}" data-action="increase">+</button>
+            </div>
             <p class="recipe-Instructions">${recipe.instruction}</p>
+            <div class="twoBtn">
             <button class="markBtn ${mark ? 'Marked' : ''}" data-id="${recipe.id}">${mark ? "Tried" : "Mark to tried"}</button>
           ${isFavoritesPage ? `<button class="deleteBtn" data-id="${recipe.id}">Delete</button>` : ''}
+          </div>
           </div>
         </div>
       `}).join('');
@@ -335,7 +389,7 @@ document.getElementById("searchBtn").addEventListener("click" , async () => {
   }
 
     const activeFilter = document.querySelector(".filter.searchactive")
-    const filter = activeFilter ? activeFilter.dataset.filter : "byname";
+    const filter =activeFilter.dataset.filter;
 
     if(filter === "byname"){
       await this.manager.fetchRecipes(searchValue)
@@ -431,6 +485,22 @@ document.querySelector(".searchfiltering").addEventListener("click" , (e) => {
     this.renderer.renderrecipeList(this.manager.getRecipe());
 
   }
+})
+
+
+document.getElementById("searchList").addEventListener("click" , (e)=>{
+  if(e.target.classList.contains("servingBtn")){
+    let id = e.target.dataset.id;
+    let action = e.target.dataset.action;
+    let recipe = this.manager.getRecipe().find(f => f.id === id);
+
+    if(!recipe) return;
+
+    const newServings = action === "increase" ? recipe.servings + 1 : Math.max(1 , recipe.servings -1);
+
+    this.manager.scaleIngredients(id , newServings);
+    this.renderer.renderrecipeList(this.manager.getRecipe());
+    }
 })
 
 
