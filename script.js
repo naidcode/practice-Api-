@@ -9,6 +9,8 @@ class Recipe{
     this.instruction = meal.strInstructions;
     this.tried = false;
     this.servings = 1;
+    this.notes = "";
+    this.dateAdded = new Date().toISOString();
 
     for (let i = 1; i <= 20;i++) {
       const ingredient = meal[`strIngredient${i}`];
@@ -29,7 +31,7 @@ class RecipeManager{
   #favorites = [];
 
   constructor() {
-    this.loadLocalstorage()
+    // this.loadLocalstorage()
   }
 
   async fetchRecipes(searchName) {
@@ -188,7 +190,7 @@ class RecipeManager{
   }
 
   scalemeasure(measure,multiplier){
-    const numbermatch = measure.match('/[\d.\/]+/');
+    const numbermatch = measure.match(/[\d.\/]+/);
     if(!numbermatch) return measure;
 
     let number = numbermatch[0];
@@ -233,6 +235,14 @@ class RecipeManager{
   generateShoppingList(){
     const generator = new ShoppingListgenerator();
     return generator.generateList(this.#favorites)
+  }
+
+  addNote(recipeId , note){
+    const fav = this.#favorites.find(f => f.id === recipeId);
+    if(!fav) return;
+
+    fav.note = note;
+    this.saveLocalStorage();
   }
 
 
@@ -351,6 +361,13 @@ class UIRenderer{
             <span class="servingCount">${recipe.servings}</span>
             <button class="servingBtn" data-id="${recipe.id}" data-action="increase">+</button>
             </div>
+            <div class="notes-section">
+            <textarea 
+              class="recipe-notes" 
+              data-id="${recipe.id}" 
+              placeholder="Add your notes here..."
+            >${recipe.notes || ''}</textarea>
+            </div>
             <p class="recipe-Instructions">${recipe.instruction}</p>
             <div class="twoBtn">
             <button class="markBtn ${mark ? 'Marked' : ''}" data-id="${recipe.id}">${mark ? "Tried" : "Mark to tried"}</button>
@@ -392,6 +409,26 @@ class UIRenderer{
       </label>
     </div>
   `).join('');
+}
+
+showLoading() {
+  const searchList = document.getElementById("searchList");
+  searchList.innerHTML = `
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Searching for recipes...</p>
+    </div>
+  `;
+}
+
+showEmptyState(message) {
+  const searchList = document.getElementById("searchList");
+  searchList.innerHTML = `
+    <div class="empty-state">
+      <span class="material-icons">search_off</span>
+      <p>${message}</p>
+    </div>
+  `;
 }
 
   
@@ -448,8 +485,19 @@ document.getElementById("searchBtn").addEventListener("click" , async () => {
     return
   }
 
+  this.renderer.showLoading();
+
+  await this.manager.fetchRecipes(searchValue);
+
+  const recipes = this.manager.getRecipe();
+  if(recipes.length === 0){
+    this.renderer.showEmptyState("No recipe Found. try a different search!")
+  } else{
+    this.renderer.renderrecipeList(recipes);
+  }
+
     const activeFilter = document.querySelector(".filter.searchactive")
-    const filter =activeFilter.dataset.filter;
+    const filter = activeFilter ? activeFilter.dataset.filter : "byname";
 
     if(filter === "byname"){
       await this.manager.fetchRecipes(searchValue)
@@ -573,6 +621,16 @@ document.getElementById("generateShoppingList").addEventListener("click", () =>{
 document.querySelector(".close").addEventListener("click" , () => {
   document.getElementById("shoppingListModal").style.display = "none"
 })
+
+
+document.getElementById("searchList").addEventListener("input", (e) => {
+  if(e.target.classList.contains("recipe-notes")){
+    const id = e.target.dataset.id;
+    const note = e.target.value;
+    this.manager.addNote(id , note)
+  }
+})
+
 
 
 
