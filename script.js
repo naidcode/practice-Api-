@@ -8,7 +8,7 @@ class Recipe{
     this.ingredients = [];
     this.instruction = meal.strInstructions;
     this.tried = false;
-    this.servings = 4;
+    this.servings = 1;
 
     for (let i = 1; i <= 20;i++) {
       const ingredient = meal[`strIngredient${i}`];
@@ -230,6 +230,11 @@ class RecipeManager{
     this.saveLocalStorage();
   }
 
+  generateShoppingList(){
+    const generator = new ShoppingListgenerator();
+    return generator.generateList(this.#favorites)
+  }
+
 
 
   saveLocalStorage(){
@@ -271,6 +276,42 @@ class RecipeManager{
   }
 
 
+}
+
+class ShoppingListitem{
+  constructor(name , measure , recipeName){
+    this.name = name;
+    this.measure = measure;
+    this.recipes = recipeName
+  }
+}
+
+class ShoppingListgenerator{
+  
+  generateList(recipes){
+    const ingredentsMap = new Map();
+
+    recipes.forEach(ing => {
+      const ket = ing.name.toLowerCase();
+
+      if(ingredentsMap.has(key)){
+        const exesting = ingredentsMap.set(key);
+        exesting.measure = this.combineMeasures(exesting.measure , ing.measure);
+        exesting.recipes.push(recipes.name);
+      } else{
+        ingredentsMap.set(key , new ShoppingListitem(
+          ing.name,
+          ing.measure,
+          [recipe.name]
+        ))
+      }
+    })
+    return Array.from(ingredentsMap.value())
+  }
+
+  combineMeasures(measure1 , measure2){
+    return `${measure1} + ${measure2}`
+  }
 }
 class UIRenderer{
   constructor(manager) {
@@ -333,6 +374,21 @@ class UIRenderer{
     this.renderrecipeList();
     this.renderfavCounts();
   }
+
+  renderShoppingList(items) {
+  const content = document.getElementById("shoppingListContent");
+  
+  content.innerHTML = items.map(item => `
+    <div class="shopping-item">
+      <input type="checkbox" id="item-${item.name}">
+      <label for="item-${item.name}">
+        <strong>${item.name}</strong> - ${item.measure}
+        <br>
+        <small>For: ${item.recipes.join(', ')}</small>
+      </label>
+    </div>
+  `).join('');
+}
 
   
 }
@@ -501,6 +557,17 @@ document.getElementById("searchList").addEventListener("click" , (e)=>{
     this.manager.scaleIngredients(id , newServings);
     this.renderer.renderrecipeList(this.manager.getRecipe());
     }
+})
+
+
+document.getElementById("generateShoppingList").addEventListener("click", () =>{
+  const shoppingList = this.manager.generateShoppingList();
+  this.renderer.renderShoppingList(shoppingList);
+  document.getElementById("shoppingListModal").style.display = "block";
+})
+
+document.querySelector(".close").addEventListener("click" , () => {
+  document.getElementById("shoppingListModal").style.display = "none"
 })
 
 
