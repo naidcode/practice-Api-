@@ -188,7 +188,7 @@ class RecipeManager{
   }
 
   scalemeasure(measure,multiplier){
-    const numbermatch = measure.match('/[/d.\/]+/');
+    const numbermatch = measure.match('/[\d.\/]+/');
     if(!numbermatch) return measure;
 
     let number = numbermatch[0];
@@ -252,6 +252,7 @@ class RecipeManager{
           this.#recipes = parse.map(item => ({
         ...item,
         tried: item.tried ?? false,
+        servings: item.servings ?? 1,
         ingredients: item.ingredients || []
       }));
     } catch (error) {
@@ -288,26 +289,29 @@ class ShoppingListitem{
 
 class ShoppingListgenerator{
   
-  generateList(recipes){
-    const ingredentsMap = new Map();
+ generateList(recipes) {
+  const ingredientsMap = new Map();
 
-    recipes.forEach(ing => {
-      const ket = ing.name.toLowerCase();
+  recipes.forEach(recipe => {
+    recipe.ingredients.forEach(ing => {
+      const key = ing.name.toLowerCase();
 
-      if(ingredentsMap.has(key)){
-        const exesting = ingredentsMap.set(key);
-        exesting.measure = this.combineMeasures(exesting.measure , ing.measure);
-        exesting.recipes.push(recipes.name);
-      } else{
-        ingredentsMap.set(key , new ShoppingListitem(
-          ing.name,
-          ing.measure,
-          [recipe.name]
-        ))
+      if (ingredientsMap.has(key)) {
+        const existing = ingredientsMap.get(key);
+        existing.measure = this.combineMeasures(existing.measure, ing.measure);
+        existing.recipes.push(recipe.name);
+      } else {
+        ingredientsMap.set(
+          key,
+          new ShoppingListitem(ing.name, ing.measure, [recipe.name])
+        );
       }
-    })
-    return Array.from(ingredentsMap.value())
-  }
+    });
+  });
+
+  return Array.from(ingredientsMap.values());
+}
+
 
   combineMeasures(measure1 , measure2){
     return `${measure1} + ${measure2}`
