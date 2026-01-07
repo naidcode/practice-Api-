@@ -359,6 +359,35 @@ border: none;
   display: flex;
 }
 
+/* Preloader container */
+#preloader {
+  position: fixed;
+  inset: 0;
+  background: #f7830f; /* dark background */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Loader animation */
+.loader {
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(255, 255, 255, 0.2);
+  border-top-color: #f9ccc1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Spin keyframe */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
 .serving-adjuster {
   display: flex;
   align-items: center;
